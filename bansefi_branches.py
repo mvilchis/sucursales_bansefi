@@ -4,20 +4,17 @@ import sys
 import requests
 from math import sin, cos, sqrt, atan2, radians
 import configparser
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
 
-######################## Constants #############################
+########################  Constants  ################################
 R_EARTH = 6373.0 # approximate radius of earth in km
 LAT_IDX = 'lat'
 LON_IDX = 'lng'
 
-#configuration
+#####################  Configuration  ##############################
 config = configparser.ConfigParser()
 config.read('keys.ini')
 
 google_api_keys = [config['google']['key_1']]
-
 
 
 
@@ -38,6 +35,12 @@ def get_distance(point_a, point_b):
     return R_EARTH * c
 
 
+
+#####################################################################
+#           Function to sort by distance                            #
+# @param result_json (json result from  google maps)                #
+# @param point_a (tuple)                                            #
+#####################################################################
 def sort_by_distance(result_json, point_a):
     result_list = []
     for item in result_json['results']:
@@ -50,6 +53,15 @@ def sort_by_distance(result_json, point_a):
     new_list = sorted (result_list, key = lambda k: k['distance_to_a'])
     return [(item['item']['geometry']['location'], item['item']['name'] )for item in new_list]
 
+
+
+#####################################################################
+#           Function to search bansefi branches by lat and lon      #
+# @param lon (float)                                                #
+# @param lat (float)                                                #
+# @param atm (bolean)                                               #
+# @param radius (number)                                            #
+#####################################################################
 def get_bansefi_branch_by_loc(lon, lat,atm ,radius=20000):
     point_a =  {LAT_IDX: lat, LON_IDX: lon}
     if atm :
@@ -62,12 +74,18 @@ def get_bansefi_branch_by_loc(lon, lat,atm ,radius=20000):
     result_list = sort_by_distance(result_json, point_a)
     return result_list
 
+#####################################################################
+#            Main function to search by locality                    #
+# @param lon (float)                                                #
+# @param lat (float)                                                #
+# @param atm (bolean)                                               #
+# @param radius (number)                                            #
+#####################################################################
 def get_bansefi (lon, lat,atm = False ,radius = 20000):
     result = get_bansefi_branch_by_loc( lon, lat, atm, radius)
     for i in result:
         print i
 
-get_bansefi (-98.2330551147461,19.3122215270996, atm = True)
 
 
 
