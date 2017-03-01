@@ -4,6 +4,8 @@ import sys
 import requests
 from math import sin, cos, sqrt, atan2, radians
 import configparser
+import os, sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
 
 ######################## Constants #############################
 R_EARTH = 6373.0 # approximate radius of earth in km
@@ -14,7 +16,7 @@ LON_IDX = 'lng'
 config = configparser.ConfigParser()
 config.read('keys.ini')
 
-google_api_keys = config['google']['keys']
+google_api_keys = [config['google']['key_1']]
 
 
 
@@ -61,7 +63,6 @@ def get_bansefi_branch_by_loc(lon, lat,atm ,radius=20000):
     return result_list
 
 def get_bansefi (lon, lat,atm = False ,radius = 20000):
-
     result = get_bansefi_branch_by_loc( lon, lat, atm, radius)
     for i in result:
         print i
