@@ -10,6 +10,7 @@ R_EARTH = 6373.0 # approximate radius of earth in km
 LAT_IDX = 'lat'
 LON_IDX = 'lng'
 
+VALID_BANSEFI = ['banco del ahorro nacional', 'bansefi', 'banco']
 #####################  Configuration  ##############################
 config = configparser.ConfigParser()
 config.read('keys.ini')
@@ -49,8 +50,10 @@ def sort_by_distance(result_json, point_a):
         item_dict = {}
         item_dict['item'] = item
         item_dict['distance_to_a'] = distance_to_a
-        result_list.append(item_dict)
+        if item['name'].startswith(tuple(VALID_BANSEFI)):
+            result_list.append(item_dict)
     new_list = sorted (result_list, key = lambda k: k['distance_to_a'])
+
     return [(item['item']['geometry']['location'], item['item']['name'] )for item in new_list]
 
 
